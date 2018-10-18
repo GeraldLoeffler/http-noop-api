@@ -3,12 +3,12 @@ pipeline {
     docker {
       image 'maven:3.5.4'
     }
-
   }
+
   stages {
-    stage('build') {
+    stage('Maven build') {
       steps {
-        sh 'mvn --version'
+        sh 'mvn clean install'
       }
     }
   }
