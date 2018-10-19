@@ -13,6 +13,8 @@ export MULE_APP="$4"
 # shortcut to invoke Anypoint CLI
 alias cli="anypoint-cli --username=$ANYPOINT_USERNAME --password=$ANYPOINT_PASSWORD --environment=$ANYPOINT_ENVIRONMENT"
 
+alias
+
 echo Deploying $MULE_APP
 
 cli api-mgr api list -o json
