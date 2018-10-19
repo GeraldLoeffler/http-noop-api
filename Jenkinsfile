@@ -1,10 +1,8 @@
 pipeline {
   agent {
     docker {
-      withCredentials([file(credentialsId: 'settings.xml', variable: 'MVN_SETTINGS_XML_PATH')]) {
-        image 'maven:3.5.4'
-        args '-v /root/.m2:/root/.m2 -v $MVN_SETTINGS_XML_PATH:/root/settings.xml'
-      }
+      image 'maven:3.5.4'
+      args '-v /root/.m2:/root/.m2 -v $MVN_SETTINGS_XML_PATH:/root/settings.xml'
     }
   }
 
