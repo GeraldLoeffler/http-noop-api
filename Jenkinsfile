@@ -14,7 +14,9 @@ pipeline {
     }
     stage('Deploy') { 
       steps {
-        sh './deploy.sh' 
+        withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', usernameVariable: 'ANYPOINT_USERNAME', passwordVariable: 'ANYPOINT_PASSWORD')]) {
+          sh './deploy.sh $ANYPOINT_USERNAME $ANYPOINT_PASSWORD' 
+        }
       }
     }
   }
