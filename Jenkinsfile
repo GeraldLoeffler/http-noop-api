@@ -1,17 +1,17 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3.5.4'
-      args '-v /root/.m2:/root/.m2'
+      withCredentials([file(credentialsId: 'settings.xml', variable: 'MVN_SETTINGS_XML_PATH')]) {
+        image 'maven:3.5.4'
+        args '-v /root/.m2:/root/.m2 -v $MVN_SETTINGS_XML_PATH:/root/settings.xml'
+      }
     }
   }
 
   stages {
     stage('Maven build, package, install') {
       steps {
-        withCredentials([file(credentialsId: 'settings.xml', variable: 'MVN_SETTINGS_XML_PATH')]) {
-          sh 'mvn clean install -s $MVN_SETTINGS_XML_PATH'
-        }
+        sh 'mvn clean install -s /root/settings.xml'
       }
     }
     stage('Deploy') { 
