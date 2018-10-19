@@ -9,7 +9,14 @@ pipeline {
   stages {
     stage('Maven build, package, install') {
       steps {
-        sh 'mvn clean install'
+        withCredentials([file(credentialsId: 'settings.xml', variable: 'MVN_SETTINGS_XML_PATH')]) {
+          sh 'mvn clean install -s $MVN_SETTINGS_XML_PATH'
+        }
+      }
+    }
+    stage('Deploy') { 
+      steps {
+        sh './deploy.sh' 
       }
     }
   }
