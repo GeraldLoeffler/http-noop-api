@@ -18,7 +18,7 @@ pipeline {
         stash includes: 'target/*.jar', name: 'app'
       }
     }
-    stage("Deploy to ${env.STAGE1_ENV}") {
+    stage('Deploy to Stage 1 environment') {
       agent {
         docker {
           image 'integrational/anypoint-cli:3.0.0'
