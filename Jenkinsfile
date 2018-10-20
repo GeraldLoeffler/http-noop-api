@@ -1,8 +1,8 @@
 pipeline {
   agent none
   environment {
-    STAGE1_ENV = "Experiment"
-    STAGE2_ENV = "Experiment"
+    STAGE1_ENV = 'Experiment'
+    STAGE2_ENV = 'Experiment'
   }
   
   stages {
@@ -15,17 +15,17 @@ pipeline {
       }
       steps {
         sh 'mvn clean package'
+        // only after integration tests succeed:
+        // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         stash includes: 'target/*.jar', name: 'app'
+        junit 'target/*.xml' 
       }
     }
-    stage('Deploy to Stage 1 environment') {
+    stage('Deploy to Stage 1 env') {
       agent {
         docker {
           image 'integrational/anypoint-cli:3.0.0'
         }
-      }
-      environment {
-        ANYPOINT_ENV = "${env.STAGE1_ENV}"
       }
       steps {
         unstash 'app'
@@ -35,7 +35,7 @@ pipeline {
           sh '''
             set +x
 
-            export ANYPOINT_ENV # otherwise not picked-up by anypoint-cli
+            export ANYPOINT_ENV=$STAGE1_ENV
 
             cd target
             export APP=$(ls *.jar)
