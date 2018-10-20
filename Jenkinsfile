@@ -1,8 +1,8 @@
 pipeline {
   agent none
-  environment {
-    STAGE1_ENV = 'Experiment'
-    STAGE2_ENV = 'Experiment'
+  parameters {
+    string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
+    string(name: 'STAGE2_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for final deployment.')
   }
   
   stages {
@@ -29,17 +29,17 @@ pipeline {
         }
       }
       environment {
-        ANYPOINT_ENV = "${env.STAGE1_ENV}"
+        ANYPOINT_ENV = "${params.STAGE1_ENV}"
       }
       steps {
         unstash 'app'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
-          usernameVariable: 'ANYPOINT_USERNAME', 
-          passwordVariable: 'ANYPOINT_PASSWORD')]) {
+            usernameVariable: 'ANYPOINT_USERNAME', 
+            passwordVariable: 'ANYPOINT_PASSWORD')]) {
           sh '''
             set +x
 
-            export ANYPOINT_ENV
+            export ANYPOINT_ENV # otherwise not picked-up by anypoint-cli
 
             cd target
             export APP=$(ls *.jar)
