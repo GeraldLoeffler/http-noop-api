@@ -18,7 +18,8 @@ pipeline {
         // only after integration tests succeed:
         // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         stash includes: 'target/*.jar', name: 'app'
-        junit 'target/*.xml' 
+        // once there are unit test results:
+        // junit 'target/*.xml' 
       }
     }
     stage('Deploy to Stage 1 env') {
