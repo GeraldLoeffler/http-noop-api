@@ -1,5 +1,9 @@
 pipeline {
   agent none
+  environment {
+    STAGE1_ENV = "Experiment"
+    STAGE2_ENV = "Experiment"
+  }
   
   stages {
     stage('Maven package') {
@@ -14,22 +18,24 @@ pipeline {
         stash includes: 'target/*.jar', name: 'app'
       }
     }
-    stage('Deploy to Experiment') {
+    stage("Deploy to ${env.STAGE1_ENV}") {
       agent {
         docker {
           image 'integrational/anypoint-cli:3.0.0'
         }
       }
       environment {
-        ANYPOINT_ENV = "Experiment"
+        ANYPOINT_ENV = "${env.STAGE1_ENV}"
       }
       steps {
         unstash 'app'
-        withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', usernameVariable: 'ANYPOINT_USERNAME', passwordVariable: 'ANYPOINT_PASSWORD')]) {
+        withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
+          usernameVariable: 'ANYPOINT_USERNAME', 
+          passwordVariable: 'ANYPOINT_PASSWORD')]) {
           sh '''
             set +x
 
-            export ANYPOINT_ENV
+            export ANYPOINT_ENV # otherwise not picked-up by anypoint-cli
 
             cd target
             export APP=$(ls *.jar)
