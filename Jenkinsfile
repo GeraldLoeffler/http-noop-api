@@ -29,7 +29,7 @@ pipeline {
         }
       }
       environment {
-        ANYPOINT_ENV = "${env.$STAGE1_ENV}"
+        ANYPOINT_ENV = "${env.STAGE1_ENV}"
       }
       steps {
         unstash 'app'
