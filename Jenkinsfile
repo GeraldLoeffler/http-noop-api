@@ -11,7 +11,7 @@ pipeline {
       }
       steps {
         sh 'mvn clean install'
-        stash includes: '**/target/*.jar', name: 'app'
+        stash includes: 'target/*.jar', name: 'app'
       }
     }
     stage('Deploy') {
@@ -23,7 +23,13 @@ pipeline {
       steps {
         unstash 'app'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', usernameVariable: 'ANYPOINT_USERNAME', passwordVariable: 'ANYPOINT_PASSWORD')]) {
-          sh './deploy.sh $ANYPOINT_USERNAME $ANYPOINT_PASSWORD Staging *.jar' 
+          /* sh './deploy.sh $ANYPOINT_USERNAME $ANYPOINT_PASSWORD Staging *.jar' */
+          sh '''
+            set +x
+            echo Unstashed Mule app to: $(ls target/*.jar)
+            echo Deploying that Mule app
+            anypoint-cli api-mgr api list -o json
+          '''
         }
       }
     }
