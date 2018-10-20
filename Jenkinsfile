@@ -29,6 +29,7 @@ pipeline {
             echo Unstashed Mule app to: $(ls target/*.jar)
             echo Deploying that Mule app
             anypoint-cli api-mgr api list -o json
+            anypoint-cli exchange asset list -o json
           '''
         }
       }
