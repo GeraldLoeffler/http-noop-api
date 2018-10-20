@@ -21,17 +21,19 @@ pipeline {
         }
       }
       environment {
-        ANYPOINT_ENVIRONMENT = "Experiment"
+        ANYPOINT_ENV = "Experiment"
       }
       steps {
         unstash 'app'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', usernameVariable: 'ANYPOINT_USERNAME', passwordVariable: 'ANYPOINT_PASSWORD')]) {
           sh '''
             set +x
-            
+
+            export ANYPOINT_ENV
+
             cd target
             export APP=$(ls *.jar)
-            echo Deploying Mule app $APP to $ANYPOINT_ENVIRONMENT
+            echo Deploying Mule app $APP to $ANYPOINT_ENV
 
             anypoint-cli api-mgr api list -o json
             anypoint-cli exchange asset list -o json
