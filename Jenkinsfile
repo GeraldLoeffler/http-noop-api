@@ -47,6 +47,7 @@ pipeline {
 
             anypoint-cli api-mgr api list -o json
             anypoint-cli exchange asset list -o json
+            runtime-mgr cloudhub-application deploy --runtime 4.1.4 --workers 2 --workerSize 0.1 --region us-east-1 --autoRestart true gerald-acli-1 $APP
           '''
         }
       }
