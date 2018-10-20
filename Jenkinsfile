@@ -1,4 +1,5 @@
 pipeline {
+  // pipeline-global Maven agent required so that pipeline-global environment can run mvn
   agent {
     docker {
       image 'maven:3.5.4'
@@ -7,7 +8,7 @@ pipeline {
   }
   environment {
     // evaluates to 'http-noop-api-1.0.0' or similar
-    APP_NAME = """${sh(returnStdout: true, script: 'mvn help:evaluate -Dexpression=project.build.finalName | grep "^[^\[]"')}"""
+    APP_NAME = "${sh(returnStdout: true, script: 'mvn help:evaluate -Dexpression=project.build.finalName | grep \"^[^\[]\"')}"
   }
   parameters {
     string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
