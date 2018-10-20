@@ -8,7 +8,7 @@ pipeline {
   }
   environment {
     // evaluates to 'http-noop-api-1.0.0' or similar
-    APP_NAME = "${sh(returnStdout: true, script: 'mvn help:evaluate -Dexpression=project.build.finalName | grep \\"^[^\\[]\\"')}"
+    APP_NAME = "${sh(returnStdout: true, script: './deployment_name.sh')}"
   }
   parameters {
     string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
