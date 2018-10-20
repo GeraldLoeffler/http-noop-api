@@ -22,7 +22,7 @@ pipeline {
         // junit 'target/*.xml' 
       }
     }
-    stage('Deploy to Stage 1 env') {
+    stage('Deploy to Stage 1 environment') {
       agent {
         docker {
           image 'integrational/anypoint-cli:3.0.0'
@@ -36,7 +36,7 @@ pipeline {
           sh '''
             set +x
 
-            export ANYPOINT_ENV=$STAGE1_ENV
+            export ANYPOINT_ENV=Experiment
 
             cd target
             export APP=$(ls *.jar)
