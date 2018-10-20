@@ -31,7 +31,7 @@ pipeline {
             
             cd target
             export APP=$(ls *.jar)
-            echo Deploying Mule app $APP
+            echo Deploying Mule app $APP to $ANYPOINT_ENVIRONMENT
 
             anypoint-cli api-mgr api list -o json
             anypoint-cli exchange asset list -o json
