@@ -25,8 +25,11 @@ pipeline {
     stage('Deploy to Stage 1 environment') {
       agent {
         docker {
-          image 'integrational/anypoint-cli:3.0.0'
+          image 'integrational/anypoint-cli:3.0.0-cmd'
         }
+      }
+      environment {
+        ANYPOINT_ENV = "${env.$STAGE1_ENV}"
       }
       steps {
         unstash 'app'
@@ -36,7 +39,7 @@ pipeline {
           sh '''
             set +x
 
-            export ANYPOINT_ENV=Experiment
+            export ANYPOINT_ENV
 
             cd target
             export APP=$(ls *.jar)
