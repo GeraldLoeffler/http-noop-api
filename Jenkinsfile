@@ -1,11 +1,5 @@
 pipeline {
-  // pipeline-global Maven agent required so that pipeline-global environment can run mvn
-  agent {
-    docker {
-      image 'maven:3.5.4'
-      args '-v /root/.m2:/root/.m2'
-    }
-  }
+  agent none
   environment {
     // evaluates to 'http-noop-api-1.0.0' or similar
     APP_NAME = "${sh(returnStdout: true, script: './deployment_name.sh')}"
@@ -17,6 +11,12 @@ pipeline {
   
   stages {
     stage('Maven package') {
+      agent {
+        docker {
+          image 'maven:3.5.4'
+          args '-v /root/.m2:/root/.m2'
+        }
+      }
       steps {
         sh 'mvn clean package'
         // only after integration tests succeed:
