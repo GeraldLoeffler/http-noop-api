@@ -20,7 +20,9 @@ pipeline {
         stash includes: 'target/*.jar', name: 'app'
         // once there are unit test results:
         // junit 'target/*.xml' 
-        appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
+        script {
+          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
+        }
         echo "Mule app name is $appName"
       }
     }
