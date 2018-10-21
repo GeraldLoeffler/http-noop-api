@@ -48,9 +48,9 @@ pipeline {
         echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ENV}"
         unstash 'appArchive'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
-            usernameVariable: 'USR', 
-            passwordVariable: 'PWD')]) {
-          sh './deploy-app.sh $USR $PWD $ENV target/$APP_ARCHIVE_FILENAME $APP_NAME'
+            usernameVariable: 'USER', 
+            passwordVariable: 'PASS')]) {
+          sh './deploy-app.sh $USER $PASS $ENV $APP_ARCHIVE_FILENAME $APP_NAME'
         }
       }
     }
