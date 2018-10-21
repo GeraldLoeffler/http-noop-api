@@ -38,7 +38,6 @@ pipeline {
       }
       steps {
         unstash 'app'
-        unstash 'appName'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
             usernameVariable: 'ANYPOINT_USERNAME', 
             passwordVariable: 'ANYPOINT_PASSWORD')]) {
