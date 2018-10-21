@@ -6,6 +6,7 @@ pipeline {
   }
   
   stages {
+
     stage('Maven package') {
       agent {
         docker {
@@ -17,16 +18,18 @@ pipeline {
         sh 'mvn clean package'
         // only after integration tests succeed:
         // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-        stash includes: 'target/*.jar', name: 'app'
+        stash includes: 'target/*.jar', name: 'appArchive'
         // once there are unit test results:
         // junit 'target/*.xml' 
         script {
-          // shorten Mule app name as much as possible
-          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll("\\W","")
+          appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
+          // shorten Maven artifact name as much as possible and use as Mule app name
+          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
         }
-        echo "Mule app name is $appName"
+        echo "Packaged Mule app $appName as $appArchiveName"
       }
     }
+
     stage('Deploy to Stage 1 environment') {
       agent {
         docker {
@@ -34,27 +37,17 @@ pipeline {
         }
       }
       environment {
-        ANYPOINT_ENV = "${params.STAGE1_ENV}"
-        APP_NAME = "$appName"
+        ENV                  = "${params.STAGE1_ENV}"
+        APP_ARCHIVE_FILENAME = "$appArchiveFilename"
+        APP_NAME             = "$appName"
       }
       steps {
-        unstash 'app'
+        echo "Deploying Mule app $APP_ARCHIVE_FILENAME as $APP_NAME to $ENV"
+        unstash 'appArchive'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
-            usernameVariable: 'ANYPOINT_USERNAME', 
-            passwordVariable: 'ANYPOINT_PASSWORD')]) {
-          sh '''
-            set +x
-
-            export ANYPOINT_ENV # otherwise not picked-up by anypoint-cli
-
-            cd target
-            export APP=$(ls *.jar)
-            echo Deploying $APP as $APP_NAME to $ANYPOINT_ENV
-
-            #anypoint-cli api-mgr api list -o json
-            #anypoint-cli exchange asset list -o json
-            anypoint-cli runtime-mgr cloudhub-application deploy --runtime 4.1.4 --workers 2 --workerSize 0.1 --region us-east-1 --autoRestart true $APP_NAME $APP
-          '''
+            usernameVariable: 'USR', 
+            passwordVariable: 'PWD')]) {
+          sh './deploy-app.sh $USR $PWD $ENV target/$APP_ARCHIVE_FILENAME $APP_NAME'
         }
       }
     }
