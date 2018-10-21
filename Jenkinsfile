@@ -21,7 +21,8 @@ pipeline {
         // once there are unit test results:
         // junit 'target/*.xml' 
         script {
-          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
+          // shorten Mule app name as much as possible
+          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll("\\W","")
         }
         echo "Mule app name is $appName"
       }
