@@ -14,11 +14,14 @@ echo Deploying Mule app $APP_ARCHIVE_FILENAME as $APP_NAME to $ANYPOINT_ENV
 appExists=$(anypoint-cli runtime-mgr cloudhub-application describe $APP_NAME -o text -f Domain | grep $APP_NAME | wc -l)
 # use 'modify' if app already exists, use 'deploy' otherwise
 command=$(if [ $appExists == 1 ]; then echo modify; else echo deploy; fi)
-
 echo Using $command command to deploy $APP_NAME
+
+propsFilename="deploy-app-$ANYPOINT_ENV.env"
+echo Sourcing deployment properties from $propsFilename
+source $propsFilename
 
 cd target # because APP_ARCHIVE_FILENAME is relative to target directory
 
 anypoint-cli runtime-mgr cloudhub-application $command \
-            --runtime 4.1.4 --workers 2 --workerSize 0.1 --region us-east-1 --autoRestart true \
+            --runtime $runtime --workers $workers --workerSize $workerSize --region $region --autoRestart $autoRestart \
             $APP_NAME $APP_ARCHIVE_FILENAME
