@@ -1,3 +1,6 @@
+// requires these plugins:
+// Pipeline Utility Steps
+// plus "recommended plugins"
 pipeline {
   agent none
   parameters {
@@ -26,7 +29,7 @@ pipeline {
           // shorten Maven artifact name as much as possible and use as Mule app name
           appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
         }
-        echo "Packaged Mule app ${appName} as ${appArchiveName}"
+        echo "Packaged Mule app ${appName} as ${appArchiveFilename}"
       }
     }
 
