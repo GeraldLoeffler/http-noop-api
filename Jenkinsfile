@@ -4,10 +4,6 @@ pipeline {
     string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
     string(name: 'STAGE2_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for final deployment.')
   }
-  environment {
-    // to be set to 'http-noop-api-1.0.0' or similar
-    APP_NAME = "override-below"
-  }
   
   stages {
     stage('Maven package') {
@@ -18,16 +14,14 @@ pipeline {
         }
       }
       steps {
-        script {
-          env.APP_NAME = sh(returnStdout: true, script: './deployment_name.sh')
-        }
-        echo "Mule app name is ${env.APP_NAME}"
         sh 'mvn clean package'
         // only after integration tests succeed:
         // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         stash includes: 'target/*.jar', name: 'app'
         // once there are unit test results:
         // junit 'target/*.xml' 
+        appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
+        echo "Mule app name is $appName"
       }
     }
     stage('Deploy to Stage 1 environment') {
@@ -38,9 +32,11 @@ pipeline {
       }
       environment {
         ANYPOINT_ENV = "${params.STAGE1_ENV}"
+        APP_NAME = "$appName"
       }
       steps {
         unstash 'app'
+        unstash 'appName'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
             usernameVariable: 'ANYPOINT_USERNAME', 
             passwordVariable: 'ANYPOINT_PASSWORD')]) {
