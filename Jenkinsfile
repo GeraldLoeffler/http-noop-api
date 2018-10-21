@@ -1,12 +1,12 @@
 pipeline {
   agent none
-  environment {
-    // evaluates to 'http-noop-api-1.0.0' or similar
-    APP_NAME = "${sh(returnStdout: true, script: './deployment_name.sh')}"
-  }
   parameters {
     string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
     string(name: 'STAGE2_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for final deployment.')
+  }
+  environment {
+    // to be set to 'http-noop-api-1.0.0' or similar
+    APP_NAME = "override-below"
   }
   
   stages {
@@ -18,6 +18,10 @@ pipeline {
         }
       }
       steps {
+        script {
+          env.APP_NAME = sh(returnStdout: true, script: './deployment_name.sh')
+        }
+        echo "Mule app name is ${env.APP_NAME}"
         sh 'mvn clean package'
         // only after integration tests succeed:
         // archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
