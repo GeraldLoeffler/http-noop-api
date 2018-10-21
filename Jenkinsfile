@@ -1,5 +1,5 @@
 // requires these plugins:
-// Pipeline Utility Steps
+// Pipeline Utility Steps TODO currently not required!
 // plus "recommended plugins"
 pipeline {
   agent none
@@ -40,18 +40,15 @@ pipeline {
         }
       }
       environment {
-        ENV                  = "${params.STAGE1_ENV}"
+        ANY                  = credentials('ANYPOINT_USERNAME_PASSWORD')
+        ANY_ENV              = "${params.STAGE1_ENV}"
         APP_ARCHIVE_FILENAME = "${appArchiveFilename}"
         APP_NAME             = "${appName}"
       }
       steps {
-        echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ENV}"
+        echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ANY_ENV}"
         unstash 'appArchive'
-        withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
-            usernameVariable: 'USER', 
-            passwordVariable: 'PASS')]) {
-          sh './deploy-app.sh $USER $PASS $ENV $APP_ARCHIVE_FILENAME $APP_NAME'
-        }
+        sh './deploy-app.sh $ANY_USR $ANY_PSW $ANY_ENV $APP_ARCHIVE_FILENAME $APP_NAME'
       }
     }
   }
