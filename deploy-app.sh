@@ -11,7 +11,7 @@ export APP_NAME="$5"
 echo Deploying Mule app $APP_ARCHIVE_FILENAME as $APP_NAME to $ANYPOINT_ENV
 
 # evals to 1 if app already exists, 0 otherwise
-appExists=$(anypoint-cli runtime-mgr cloudhub-application describe $APP_NAME -o text -f Domain | grep $APP_NAME | wc -l)
+appExists=$(anypoint-cli runtime-mgr cloudhub-application describe $APP_NAME -o text -f Status | grep Status | wc -l)
 # use 'modify' if app already exists, use 'deploy' otherwise
 command=$(if [ $appExists == 1 ]; then echo modify; else echo deploy; fi)
 echo Using $command command to deploy $APP_NAME
