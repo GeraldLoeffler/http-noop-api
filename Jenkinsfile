@@ -26,7 +26,7 @@ pipeline {
           // shorten Maven artifact name as much as possible and use as Mule app name
           appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
         }
-        echo "Packaged Mule app $appName as $appArchiveName"
+        echo "Packaged Mule app ${appName} as ${appArchiveName}"
       }
     }
 
@@ -38,11 +38,11 @@ pipeline {
       }
       environment {
         ENV                  = "${params.STAGE1_ENV}"
-        APP_ARCHIVE_FILENAME = "$appArchiveFilename"
-        APP_NAME             = "$appName"
+        APP_ARCHIVE_FILENAME = "${appArchiveFilename}"
+        APP_NAME             = "${appName}"
       }
       steps {
-        echo "Deploying Mule app $APP_ARCHIVE_FILENAME as $APP_NAME to $ENV"
+        echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ENV}"
         unstash 'appArchive'
         withCredentials([usernamePassword(credentialsId: 'ANYPOINT_USERNAME_PASSWORD', 
             usernameVariable: 'USR', 
