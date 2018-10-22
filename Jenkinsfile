@@ -30,7 +30,7 @@ pipeline {
         script {
           // shorten Maven artifact name as much as possible and use as Mule app name
           artifactName       = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
-          appName            = "${env.APP_PREFIX}${artifactName.replaceAll('\\W', '')}"
+          appName            = env.APP_PREFIX + artifactName.replaceAll('\\W', '')
           appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
         }
         echo "Packaged Mule app ${appName} as ${appArchiveFilename}"
@@ -45,9 +45,9 @@ pipeline {
       }
       environment {
         ANY                  = credentials('ANYPOINT_USERNAME_PASSWORD')
-        ANY_ENV              = "${params.STAGE1_ENV}"
-        APP_ARCHIVE_FILENAME = "${appArchiveFilename}"
-        APP_NAME             = "${appName}"
+        ANY_ENV              = params.STAGE1_ENV
+        APP_ARCHIVE_FILENAME = appArchiveFilename
+        APP_NAME             = appName
       }
       steps {
         echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ANY_ENV}"
