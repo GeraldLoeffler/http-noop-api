@@ -6,6 +6,7 @@
 pipeline {
   agent none
   parameters {
+    string(name: 'APP_PREFIX', defaultValue: 'gl',         description: 'To be prepended to Mule app name.')
     string(name: 'STAGE1_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for initial deployment, e.g., for integration testing.')
     string(name: 'STAGE2_ENV', defaultValue: 'Experiment', description: 'Name of Anypoint Platform environment for final deployment.')
   }
@@ -28,7 +29,8 @@ pipeline {
         // junit 'target/*.xml' 
         script {
           // shorten Maven artifact name as much as possible and use as Mule app name
-          appName            = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
+          artifactName       = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
+          appName            = ${env.APP_PREFIX} + ${artifactName}.replaceAll('\\W', '')
           appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
         }
         echo "Packaged Mule app ${appName} as ${appArchiveFilename}"
