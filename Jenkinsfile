@@ -1,7 +1,8 @@
 //
 // requires:
 // Jenkins' "recommended plugins"
-// Maven settings.xml required by Maven build added to Jenkins as secret file with that name
+// Maven settings.xml as required by Maven build added to Jenkins as secret file with name settings.xml
+// Anypoint Platform credentials added to Jenkins as secret username/password with name ANYPOINT_USERNAME_PASSWORD
 //
 pipeline {
   agent none
