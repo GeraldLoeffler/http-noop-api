@@ -24,6 +24,6 @@ cd target # because APP_ARCHIVE_FILENAME is relative to target directory
 
 anypoint-cli runtime-mgr cloudhub-application $command \
             --runtime $runtime --workers $workers --workerSize $workerSize --region $region \
-            --persistentQueues $persistentQueues --persistentQueuesEncrypted $persistentQueuesEncrypted 
+            --persistentQueues $persistentQueues --persistentQueuesEncrypted $persistentQueuesEncrypted \
             --staticIPsEnabled $staticIPsEnabled --autoRestart $autoRestart \
             $APP_NAME $APP_ARCHIVE_FILENAME
