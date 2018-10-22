@@ -45,9 +45,9 @@ pipeline {
       }
       environment {
         ANY                  = credentials('ANYPOINT_USERNAME_PASSWORD')
-        ANY_ENV              = params.STAGE1_ENV
-        APP_ARCHIVE_FILENAME = appArchiveFilename
-        APP_NAME             = appName
+        ANY_ENV              = "${params.STAGE1_ENV}"
+        APP_ARCHIVE_FILENAME = "${appArchiveFilename}"
+        APP_NAME             = "${appName}"
       }
       steps {
         echo "Deploying Mule app ${env.APP_ARCHIVE_FILENAME} as ${env.APP_NAME} to ${env.ANY_ENV}"
