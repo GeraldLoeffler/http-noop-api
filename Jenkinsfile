@@ -30,7 +30,7 @@ pipeline {
         script {
           // shorten Maven artifact name as much as possible and use as Mule app name
           artifactName       = sh(script: './artifact-final-name.sh', returnStdout: true).trim()
-          appName            = ${env.APP_PREFIX} + ${artifactName}.replaceAll('\\W', '')
+          appName            = "${env.APP_PREFIX}" + "${artifactName}".replaceAll('\\W', '')
           appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
         }
         echo "Packaged Mule app ${appName} as ${appArchiveFilename}"
