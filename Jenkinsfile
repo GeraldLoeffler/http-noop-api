@@ -1,6 +1,8 @@
-// requires these plugins:
-// Pipeline Utility Steps TODO currently not required!
-// plus "recommended plugins"
+//
+// requires:
+// Jenkins' "recommended plugins"
+// Maven settings.xml required by Maven build added to Jenkins as secret file with that name
+//
 pipeline {
   agent none
   parameters {
@@ -25,9 +27,9 @@ pipeline {
         // once there are unit test results:
         // junit 'target/*.xml' 
         script {
-          appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
           // shorten Maven artifact name as much as possible and use as Mule app name
-          appName = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
+          appName            = sh(script: './artifact-final-name.sh', returnStdout: true).trim().replaceAll('\\W', '')
+          appArchiveFilename = sh(script: 'cd target; ls *.jar', returnStdout: true).trim()
         }
         echo "Packaged Mule app ${appName} as ${appArchiveFilename}"
       }

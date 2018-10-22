@@ -17,8 +17,8 @@ command=$(if [ $appExists == 1 ]; then echo modify; else echo deploy; fi)
 echo Using $command command to deploy $APP_NAME
 
 propsFilename="deploy-app-$ANYPOINT_ENV.env"
-echo Sourcing deployment properties from $propsFilename
-source $propsFilename
+echo Using deployment properties from $propsFilename
+eval $(awk '{print "export " $1}' $propsFilename) # so that file just sets vars, without export
 
 cd target # because APP_ARCHIVE_FILENAME is relative to target directory
 
